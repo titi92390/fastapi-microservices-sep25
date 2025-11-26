@@ -1,0 +1,27 @@
+global:
+  databaseUrl: "postgresql://postgres:postgres@postgres.prod.svc.cluster.local:5432/postgres"
+  secretKey: "change-me-in-prod"
+
+auth:
+  image:
+    repository: your-registry/auth
+    tag: "1.0.0"
+  ingress:
+    host: auth.prod.example.com
+    path: /
+
+users:
+  image:
+    repository: your-registry/users
+    tag: "1.0.0"
+  ingress:
+    host: users.prod.example.com
+    path: /
+
+items:
+  image:
+    repository: your-registry/items
+    tag: "1.0.0"
+  ingress:
+    host: items.prod.example.com
+    path: /

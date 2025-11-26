@@ -1,0 +1,12 @@
+dependencies:
+- name: auth
+  repository: file://../auth
+  version: 0.1.0
+- name: users
+  repository: file://../users
+  version: 0.1.0
+- name: items
+  repository: file://../items
+  version: 0.1.0
+digest: sha256:01ada20a5e22803b368444981e67ed1d21604f9e64d94c6a722b6c01d0f20ae4
+generated: "2025-11-25T16:20:46.802404203Z"
