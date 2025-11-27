@@ -5,9 +5,8 @@ from app.core.db import engine
 
 app = FastAPI(title="Auth Service")
 
-# ROUTES
-app.include_router(login.router)
-
+# Add API and service prefix
+app.include_router(login.router, prefix="/auth")
 
 # --- DATABASE INIT ---
 @app.on_event("startup")

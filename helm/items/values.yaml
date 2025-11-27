@@ -16,6 +16,4 @@ secrets:
 resources: {}
 
 ingress:
-  enabled: true
-  host: localhost
-  path: /items
+  enabled: false
