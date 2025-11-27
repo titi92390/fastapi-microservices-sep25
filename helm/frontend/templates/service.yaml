@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: {{ include "frontend.fullname" . }}
   labels:
-    {{ include "frontend.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "frontend.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   type: ClusterIP
   ports:

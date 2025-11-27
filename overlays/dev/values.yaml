@@ -26,3 +26,14 @@ items:
   secrets:
     SECRET_KEY: "mydevsecret"
     DATABASE_URL: "postgresql://postgres:postgres@postgres-postgresql.dev.svc.cluster.local:5432/postgres"
+
+frontend:
+  image:
+    registry: docker.io
+    repository: leogrv22/frontend
+    tag: dev
+  env:
+    NEXT_PUBLIC_API_BASE: "http://54.229.164.217"
+  ingress:
+    enabled: true
+    path: /
