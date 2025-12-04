@@ -138,15 +138,15 @@ output "root_domain" {
 # CERTIFICATE OUTPUTS
 # ============================================================================
 
-output "acm_certificate_arn" {
-  description = "ARN du certificat ACM"
-  value       = aws_acm_certificate.main.arn
-}
+#output "acm_certificate_arn" {
+#  description = "ARN du certificat ACM"
+#  value       = aws_acm_certificate.main.arn
+#}
 
-output "acm_certificate_status" {
-  description = "Statut du certificat ACM"
-  value       = aws_acm_certificate.main.status
-}
+#output "acm_certificate_status" {
+#  description = "Statut du certificat ACM"
+#  value       = aws_acm_certificate.main.status
+#}
 
 # ============================================================================
 # S3 OUTPUTS

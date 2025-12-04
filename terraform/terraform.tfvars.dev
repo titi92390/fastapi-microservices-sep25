@@ -14,7 +14,7 @@ private_subnets_eks  = ["10.0.2.0/24", "10.0.20.0/24"]
 private_subnets_rds  = ["10.0.3.0/24", "10.0.30.0/24"]
 
 # EKS
-eks_cluster_version   = "1.28"
+eks_cluster_version   = "1.29"
 eks_node_instance_types = ["t3.medium"]
 eks_node_desired_size = 2
 eks_node_min_size     = 2
@@ -23,9 +23,9 @@ eks_node_max_size     = 3
 # RDS
 rds_instance_class    = "db.t3.small"
 rds_allocated_storage = 20
-rds_engine_version    = "15.4"
+rds_engine_version    = "17.7"
 rds_database_name     = "microservices_dev"
-rds_master_username   = "admin"
+rds_master_username   = "dbadmin"
 rds_multi_az          = false  # Pas de Multi-AZ en dev pour économiser
 
 # Route53

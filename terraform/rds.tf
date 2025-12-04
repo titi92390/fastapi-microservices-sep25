@@ -20,7 +20,7 @@ resource "aws_db_subnet_group" "main" {
 
 resource "aws_db_parameter_group" "postgresql" {
   name   = "${var.project_name}-${var.environment}-postgresql-params"
-  family = "postgres15"
+  family = "postgres17"
 
   parameter {
     name  = "log_connections"

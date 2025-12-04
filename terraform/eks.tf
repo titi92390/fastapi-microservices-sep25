@@ -136,3 +136,29 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
 
   force = true
 }
+
+# ============================================================================
+# FIX AWS-AUTH CONFIGMAP
+# ============================================================================
+
+resource "null_resource" "update_aws_auth" {
+  depends_on = [module.eks]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      sleep 30
+      aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}
+      
+      kubectl patch configmap aws-auth -n kube-system --type merge -p '{
+        "data": {
+          "mapRoles": "- rolearn: ${aws_iam_role.eks_nodes.arn}\n  username: system:node:{{EC2PrivateDNSName}}\n  groups:\n    - system:bootstrappers\n    - system:nodes\n"
+        }
+      }'
+    EOT
+  }
+
+  triggers = {
+    cluster_name = module.eks.cluster_name
+    node_role    = aws_iam_role.eks_nodes.arn
+  }
+}
