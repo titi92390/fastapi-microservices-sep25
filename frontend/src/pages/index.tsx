@@ -14,10 +14,17 @@ export default function Login() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErr("");
+    console.log("🚀 Form submitted!");
+    console.log("📧 Email:", email);
+    console.log("🔑 Password:", password);
+    
     try {
+      console.log("🔄 Calling login...");
       await login(email, password);
+      console.log("✅ Login success!");
       router.push("/dashboard");
-    } catch {
+    } catch (error) {
+      console.error("❌ Login error:", error);
       setErr("Invalid credentials");
     }
   };

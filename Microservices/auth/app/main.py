@@ -1,17 +1,22 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
-from app.api.routes import login
+from app.api.routes import users
 from app.core.db import engine
-from app.api.routes import login, verify  
 
+app = FastAPI(title="Users Service")
 
-app = FastAPI(title="Auth Service")
+# CORS Configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Add API and service prefix
-app.include_router(login.router, prefix="/auth")
-app.include_router(verify.router)  
+app.include_router(users.router)
 
-# --- DATABASE INIT ---
 @app.on_event("startup")
 def on_startup():
     print("Initializing database...")

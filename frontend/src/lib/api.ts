@@ -1,27 +1,43 @@
 import axios from "axios";
 
-// IMPORTANT : on passe par le gateway Traefik.
-// Exemple: NEXT_PUBLIC_API_BASE = "http://172.31.38.131"
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost";
+// Extraire host et protocole SANS le port
+const getBaseUrl = (port: string) => {
+  if (typeof window === "undefined") return "";
+  
+  const { protocol, hostname } = window.location;
+  return `${protocol}//${hostname}:${port}/api/v1`;
+};
 
-export const apiAuth = axios.create({
-  baseURL: `${API_BASE}/auth/api/v1`,
-});
-export const apiUsers = axios.create({
-  baseURL: `${API_BASE}/users/api/v1`,
-});
-export const apiItems = axios.create({
-  baseURL: `${API_BASE}/items/api/v1`,
+export const apiAuth = axios.create();
+export const apiUsers = axios.create();
+export const apiItems = axios.create();
+
+// Interceptor Auth
+apiAuth.interceptors.request.use((config) => {
+  if (config.url?.startsWith("/")) {
+    config.url = getBaseUrl("30081") + config.url;
+  }
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
-// Attache automatiquement le token si présent
-function attachToken(instance: typeof apiAuth) {
-  instance.interceptors.request.use((config) => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  });
-}
-[apiUsers, apiItems].forEach(attachToken);
+// Interceptor Users
+apiUsers.interceptors.request.use((config) => {
+  if (config.url?.startsWith("/")) {
+    config.url = getBaseUrl("30082") + config.url;
+  }
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-export { API_BASE };
+// Interceptor Items
+apiItems.interceptors.request.use((config) => {
+  if (config.url?.startsWith("/")) {
+    config.url = getBaseUrl("30083") + config.url;
+  }
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
