@@ -1,47 +1,29 @@
 global:
-  imageRegistry: docker.io
-  environment: dev
-  useExternalSecrets: true  # Activer ESO pour AWS
+  useExternalSecrets: false
+  
+  database:
+    host: postgres-postgresql.dev.svc.cluster.local
+    port: "5432"
+    name: postgres
+    user: postgres
+    password: postgres
 
 auth:
-  ingress:
-    enabled: true
-    host: "api.leotest.abrdns.com"
-    path: /auth
   image:
-    repository: leogrv22/auth
     tag: dev
-  # Les secrets seront lus depuis ESO
-  secrets: {}
+    pullPolicy: Always
 
 users:
-  ingress:
-    enabled: true
-    host: "api.leotest.abrdns.com"
-    path: /users
   image:
-    repository: leogrv22/users
     tag: dev
-  secrets: {}
+    pullPolicy: Always
 
 items:
-  ingress:
-    enabled: true
-    host: "api.leotest.abrdns.com"
-    path: /items
   image:
-    repository: leogrv22/items
     tag: dev
-  secrets: {}
+    pullPolicy: Always
 
 frontend:
   image:
-    registry: docker.io
-    repository: leogrv22/frontend
     tag: dev
-  env:
-    NEXT_PUBLIC_API_BASE: "http://api.leotest.abrdns.com"
-  ingress:
-    enabled: true
-    host: "app.leotest.abrdns.com"
-    path: /
+    pullPolicy: Always
