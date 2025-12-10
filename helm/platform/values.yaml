@@ -16,3 +16,8 @@ items:
   image:
     repository: leogrv22/items
     tag: dev
+
+gateway:
+  rateLimit:
+    average: 50
+    burst: 25

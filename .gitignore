@@ -1,0 +1,113 @@
+# ===============================
+# PYTHON
+# ===============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+.env
+.env.*
+.venv/
+venv/
+env/
+
+# SQLite / local DB files
+*.db
+*.sqlite
+instance/
+
+# ===============================
+# FASTAPI
+# ===============================
+*.pid
+
+# ===============================
+# DOCKER
+# ===============================
+# Volumes Docker (DB, Grafana, Prometheus, etc.)
+postgres_data/
+grafana_data/
+prometheus_data/
+cadvisor_data/
+
+# Docker build artifacts
+*.tar
+*.tar.gz
+
+# Avoid storing local Docker layers
+docker-images/
+
+# ===============================
+# TERRAFORM
+# ===============================
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# ===============================
+# SECRETS / SECURITY
+# ===============================
+# Ne jamais versionner les clés ou credentials
+*.key
+*.pem
+*.crt
+*.credentials
+aws_credentials
+*.secret
+secrets/
+config/secrets/
+
+# ===============================
+# IDE / EDITORS
+# ===============================
+.vscode/
+.idea/
+
+# ===============================
+# OS FILES
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# BUILD ARTIFACTS
+# ===============================
+dist/
+build/
+
+# ===============================
+# ARCHIVES
+# ===============================
+*.zip
+*.tar
+*.tar.gz
+
+# ===============================
+# HELM / KUBERNETES
+# ===============================
+traefik-helm-chart-master/
+k8s/
+
+# ===============================
+# GIT
+# ===============================
+# Ne jamais versionner un autre dépôt git
+*/.git/
+
+postgres/
+postgres_data/
+postgres-data/
+
+# Ignore local LXD/Docker database folder
+postgres/
+
+# Fichiers orphelins générés par Docker (hashs)
+[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]*

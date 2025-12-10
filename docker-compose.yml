@@ -1,0 +1,107 @@
+services:
+
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - traefik-net
+
+  users:
+    build: ./Microservices/users
+    container_name: fastapi-microservices-users
+    depends_on:
+      - postgres-db
+    networks:
+      - traefik-net
+
+  items:
+    build: ./Microservices/items
+    container_name: fastapi-microservices-items
+    networks:
+      - traefik-net
+
+  auth:
+    build: ./Microservices/auth
+    container_name: fastapi-microservices-auth
+    networks:
+      - traefik-net
+
+  gateway:
+    build: ./Microservices/gateway
+    container_name: fastapi-microservices-gateway
+    depends_on:
+      - users
+      - items
+      - auth
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      # Le gateway est accessible via /gateway/*
+      - "traefik.http.routers.gateway.rule=PathPrefix(`/gateway`)"
+      - "traefik.http.services.gateway.loadbalancer.server.port=8000"
+
+  frontend:
+    build: ./frontend
+    container_name: fastapi-microservices-frontend
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      # Le frontend sert TOUTES les pages à la racine "/"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+
+  traefik:
+    image: traefik:v2.11
+    container_name: fastapi-microservices-traefik
+    command:
+      - "--providers.docker=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"       # HTTP
+      - "8080:8080"   # Dashboard Traefik
+    networks:
+      - traefik-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - traefik-net
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    networks:
+      - traefik-net
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8081:8080"
+    networks:
+      - traefik-net
+
+volumes:
+  postgres_data:
+
+networks:
+  traefik-net:
+    driver: bridge

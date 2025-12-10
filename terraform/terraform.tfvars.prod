@@ -1,0 +1,52 @@
+# ============================================================================
+# TERRAFORM VARIABLES - ENVIRONNEMENT PROD
+# ============================================================================
+
+# Général
+aws_region   = "eu-west-3"
+project_name = "microservices-platform"
+environment  = "prod"
+
+# VPC
+vpc_cidr             = "10.0.0.0/16"
+public_subnets       = ["10.0.1.0/24", "10.0.10.0/24"]
+private_subnets_eks  = ["10.0.2.0/24", "10.0.20.0/24"]
+private_subnets_rds  = ["10.0.3.0/24", "10.0.30.0/24"]
+
+# EKS
+eks_cluster_version   = "1.28"
+eks_node_instance_types = ["t3.medium"]
+eks_node_desired_size = 3  # Plus de nodes en prod
+eks_node_min_size     = 2
+eks_node_max_size     = 6  # Peut scaler plus haut
+
+# RDS
+rds_instance_class    = "db.t3.small"
+rds_allocated_storage = 50  # Plus de storage en prod
+rds_engine_version    = "15.4"
+rds_database_name     = "microservices_prod"
+rds_master_username   = "admin"
+rds_master_password   = "CHANGEME_PROD_STRONG_PASSWORD_XYZ!"  # ⚠️ OBLIGATOIRE À CHANGER !
+rds_multi_az          = true  # ✅ Multi-AZ activé pour HA en prod
+
+# Route53
+domain_name         = "leotest.abrdns.com"
+create_route53_zone = false  # false si la zone existe déjà
+
+# Application
+app_secret_key = "prod-super-secret-key-VERY-SECURE-987654321"  # ⚠️ OBLIGATOIRE À CHANGER !
+
+docker_images = {
+  auth     = "leogrv22/auth:v1.0.0"    # Utiliser des versions stables en prod
+  users    = "leogrv22/users:v1.0.0"
+  items    = "leogrv22/items:v1.0.0"
+  frontend = "leogrv22/frontend:v1.0.0"
+}
+
+# Tags
+tags = {
+  Environment = "prod"
+  Team        = "Platform"
+  CostCenter  = "Production"
+  Compliance  = "Required"
+}
