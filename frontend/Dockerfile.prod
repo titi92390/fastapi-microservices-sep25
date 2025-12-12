@@ -1,7 +1,7 @@
 FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci || npm install
 COPY . .
 # Remplacer api.ts par api.prod.ts
 RUN cp src/lib/api.prod.ts src/lib/api.ts
