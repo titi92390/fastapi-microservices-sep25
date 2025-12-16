@@ -1,0 +1,23 @@
+server:
+  dev:
+    enabled: true
+
+ui:
+  enabled: true
+
+service:
+  type: ClusterIP
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+# IMPORTANT:
+# This configuration is for local / staging Kubernetes only.
+# NOT intended for production AWS EKS deployment.
+# Production setup (HA, IRSA, KMS, etc.) must be handled separately.
+
