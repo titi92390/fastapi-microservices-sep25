@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  users:
+    build:
+      context: ./Microservices/users
+    ports:
+      - "8001:8000"
+    container_name: users-service
+    environment:
+      DATABASE_URL: postgresql+psycopg2://app:app@db:5432/app
+    depends_on:
+      - db
+
+  items:
+    build:
+      context: ./Microservices/items
+    ports:
+      - "8002:8000"
+    container_name: items-service
+    environment:
+      DATABASE_URL: postgresql+psycopg2://app:app@db:5432/app
+    depends_on:
+      - db
+
+  auth:
+    build:
+      context: ./Microservices/auth
+    ports:
+      - "8003:8000"
+    container_name: auth-service
+    environment:
+      DATABASE_URL: postgresql+psycopg2://app:app@db:5432/app
+    depends_on:
+      - db
+
+  gateway:
+    build:
+      context: ./Microservices/gateway
+    ports:
+      - "8000:8000"
+    container_name: gateway-service
+    depends_on:
+      - users
+      - items
+      - auth
+
+volumes:
+  pgdata:
