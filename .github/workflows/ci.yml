@@ -1,0 +1,52 @@
+name: CI - FastAPI Microservices
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build & Push USERS
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Microservices/users
+        push: true
+        tags: titi92390/fastapi-users:latest
+
+    - name: Build & Push ITEMS
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Microservices/items
+        push: true
+        tags: titi92390/fastapi-items:latest
+
+    - name: Build & Push AUTH
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Microservices/auth
+        push: true
+        tags: titi92390/fastapi-auth:latest
+
+    - name: Build & Push GATEWAY
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Microservices/gateway
+        push: true
+        tags: titi92390/fastapi-gateway:latest
