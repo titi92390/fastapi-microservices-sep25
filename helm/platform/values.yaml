@@ -1,68 +1,138 @@
+# =========================
+# Global configuration
+# =========================
+global:
+  useExternalSecrets: false
+  imageRegistry: titi92390
+
+  database:
+    enabled: true
+    host: postgres
+    port: 5432
+    name: app
+    user: app
+    password: app
+
+# =========================
 # Auth Service
+# =========================
 auth:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/auth
+    repository: auth
     tag: dev
     pullPolicy: Always
-  
+
   service:
     type: NodePort
     port: 80
     targetPort: 8000
     nodePort: 30081
-  
+
   env:
     APP_ENV: dev
-  
+    DATABASE_HOST: postgres
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: app
+    DATABASE_USER: app
+    DATABASE_PASSWORD: app
+
+  secrets:
+    SECRET_KEY: "dev-auth-secret-key"
+
   resources: {}
   ingress:
     enabled: false
 
+# =========================
 # Users Service
+# =========================
 users:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/users
+    repository: users
     tag: dev
     pullPolicy: Always
-  
+
   service:
-    type: NodePort 
+    type: NodePort
     port: 80
     targetPort: 8000
-    nodePort: 30082 
-  
+    nodePort: 30082
+
   env:
     APP_ENV: dev
-  
+    DATABASE_HOST: postgres
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: app
+    DATABASE_USER: app
+    DATABASE_PASSWORD: app
+
+  secrets:
+    SECRET_KEY: "dev-users-secret-key"
+
   resources: {}
   ingress:
     enabled: false
 
+# =========================
 # Items Service
+# =========================
 items:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/items
+    repository: items
     tag: dev
     pullPolicy: Always
-  
+
   service:
     type: NodePort
     port: 80
     targetPort: 8000
     nodePort: 30083
-  
+
   env:
     APP_ENV: dev
-  
+    DATABASE_HOST: postgres
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: app
+    DATABASE_USER: app
+    DATABASE_PASSWORD: app
+
+  secrets:
+    SECRET_KEY: "dev-items-secret-key"
+
+  resources: {}
+  ingress:
+    enabled: false
+
+# =========================
+# Frontend Service
+# =========================
+frontend:
+  enabled: false
+  replicaCount: 1
+
+  image:
+    repository: frontend
+    tag: dev
+    pullPolicy: Always
+
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+
+  env:
+    APP_ENV: dev
+
   resources: {}
   ingress:
     enabled: false

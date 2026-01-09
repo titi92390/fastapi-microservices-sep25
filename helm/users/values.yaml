@@ -1,19 +1,22 @@
 replicaCount: 1
 
 image:
-  registry: docker.io
   repository: leogrv22/users
   tag: dev
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8000
 
 env:
   APP_ENV: dev
-
-secrets:
-  SECRET_KEY: ""
-  DATABASE_URL: ""
 
 resources: {}
 
 ingress:
   enabled: false
+
+# 🔴 OBLIGATOIRE — LU PAR LE TEMPLATE
+global:
+  waitForDatabase: false
