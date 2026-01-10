@@ -4,9 +4,12 @@ from sqlmodel import SQLModel
 from app.api.routes import users
 from app.core.db import engine
 
-app = FastAPI(title="Users Service")
+app = FastAPI(
+    title="Users Service",
+    root_path="/api/users"
+)
 
-# CORS Configuration - AJOUT ICI
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

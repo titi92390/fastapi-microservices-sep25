@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
-from app.api.routes import login  # ← CORRIGÉ
+from app.api.routes import login, verify
 from app.core.db import engine
 
-app = FastAPI(title="Auth Service")  # ← CORRIGÉ
+app = FastAPI(
+    title="Auth Service",
+    root_path="/api/auth"
+)
 
-# CORS Configuration
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,9 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(login.router)  # ← CORRIGÉ
+# Routes
+app.include_router(login.router, prefix="/login", tags=["login"])
+app.include_router(verify.router, prefix="/verify", tags=["verify"])
 
+# DB init
 @app.on_event("startup")
-def on_startup():
-    print("Initializing database...")
+def on_startup() -> None:
     SQLModel.metadata.create_all(engine)
