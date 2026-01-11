@@ -4,7 +4,10 @@ from sqlmodel import SQLModel
 from app.api.routes import items
 from app.core.db import engine
 
-app = FastAPI(title="Items Service")
+app = FastAPI(
+    title="Items Service",
+    root_path="/api/items"
+)
 
 # CORS Configuration
 app.add_middleware(

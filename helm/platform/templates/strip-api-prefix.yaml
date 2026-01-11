@@ -1,0 +1,30 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-api-auth
+  namespace: fastapi
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/auth
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-api-users
+  namespace: fastapi
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/users
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-api-items
+  namespace: fastapi
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/items
+

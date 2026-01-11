@@ -1,3 +1,16 @@
-.terraform/
-helm/platform/charts/*.tgz
-helm/platform/charts/*.tgz
+# Helm packaged charts
+*.tgz
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Env
+.env
+
+# Optional Kubernetes manifests (if Helm is source of truth)
+k8s/
+

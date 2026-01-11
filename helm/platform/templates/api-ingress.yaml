@@ -1,25 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: platform-ingress
+  name: fastapi-api
   namespace: fastapi
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: |
+      fastapi-strip-api-auth@kubernetescrd,
+      fastapi-strip-api-users@kubernetescrd,
+      fastapi-strip-api-items@kubernetescrd
 spec:
   rules:
     - host: fastapi-tiffanie.duckdns.org
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: platform-frontend
-                port:
-                  number: 80
-
           - path: /api/auth
             pathType: Prefix
             backend:
@@ -27,7 +23,6 @@ spec:
                 name: platform-auth
                 port:
                   number: 80
-
           - path: /api/users
             pathType: Prefix
             backend:
@@ -35,7 +30,6 @@ spec:
                 name: platform-users
                 port:
                   number: 80
-
           - path: /api/items
             pathType: Prefix
             backend:
@@ -43,4 +37,3 @@ spec:
                 name: platform-items
                 port:
                   number: 80
-
