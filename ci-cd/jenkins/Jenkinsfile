@@ -5,53 +5,62 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  serviceAccountName: jenkins
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:latest
     command:
     - cat
     tty: true
-    volumeMounts:
-    - name: docker-config
-      mountPath: /kaniko/.docker
-  volumes:
-  - name: docker-config
-    secret:
-      secretName: dockerhub-credentials
+  - name: helm
+    image: alpine/helm:3.14.0
+    command:
+    - cat
+    tty: true
 """
     }
   }
 
   environment {
-    REGISTRY = "titi92390"
-    TAG = "dev"
+    DOCKERHUB_USER = "titi92390"
+    REGISTRY = "docker.io"
   }
 
   stages {
-    stage('Build & Push Images') {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build Docker Images') {
       steps {
         container('kaniko') {
-          sh '''
-            /kaniko/executor \
-              --context ./Microservices/auth \
-              --dockerfile Dockerfile.dev \
-              --destination=${REGISTRY}/auth:${TAG}
+          script {
+            def services = ["auth", "users", "items"]
 
-            /kaniko/executor \
-              --context ./Microservices/users \
-              --dockerfile Dockerfile.dev \
-              --destination=${REGISTRY}/users:${TAG}
+            for (svc in services) {
+              sh """
+              /kaniko/executor \
+                --context ./Microservices/${svc} \
+                --dockerfile ./Microservices/${svc}/Dockerfile \
+                --destination=${REGISTRY}/${DOCKERHUB_USER}/${svc}:dev
+              """
+            }
+          }
+        }
+      }
+    }
 
-            /kaniko/executor \
-              --context ./Microservices/items \
-              --dockerfile Dockerfile.dev \
-              --destination=${REGISTRY}/items:${TAG}
-
-            /kaniko/executor \
-              --context ./frontend \
-              --dockerfile Dockerfile.dev \
-              --destination=${REGISTRY}/frontend:${TAG}
-          '''
+    stage('Deploy to Kubernetes (Helm)') {
+      steps {
+        container('helm') {
+          sh """
+            helm upgrade --install platform helm/platform \
+              -n fastapi \
+              --create-namespace
+          """
         }
       }
     }
@@ -59,10 +68,10 @@ spec:
 
   post {
     success {
-      echo "CI pipeline completed successfully"
+      echo "✅ CI/CD terminé : images + déploiement OK"
     }
     failure {
-      echo "CI pipeline failed"
+      echo "❌ Pipeline échoué"
     }
   }
 }
