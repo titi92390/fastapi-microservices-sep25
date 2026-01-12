@@ -4,6 +4,7 @@ pipeline {
   environment {
     REGISTRY = "docker.io/titi92390"
     TAG = "dev"
+    KUBE_NAMESPACE = "fastapi"
   }
 
   stages {
@@ -28,12 +29,23 @@ pipeline {
             SERVICES="auth users items frontend"
 
             for svc in $SERVICES; do
-              echo "Building $svc"
               docker build -t $REGISTRY/$svc:$TAG Microservices/$svc
               docker push $REGISTRY/$svc:$TAG
             done
           '''
         }
+      }
+    }
+
+    stage('Deploy with Helm') {
+      steps {
+        sh '''
+          helm dependency build helm/platform
+          helm upgrade --install platform helm/platform \
+            -n $KUBE_NAMESPACE \
+            -f helm/platform/values.yaml \
+            --create-namespace
+        '''
       }
     }
   }
