@@ -1,43 +1,57 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: docker-config
+      mountPath: /kaniko/.docker
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: dockerhub-credentials
+"""
+    }
+  }
 
   environment {
-    DOCKERHUB_USER = "titi92390"
-    REGISTRY = "docker.io"
+    REGISTRY = "titi92390"
+    TAG = "dev"
   }
 
   stages {
-
-    stage('Checkout') {
+    stage('Build & Push Images') {
       steps {
-        checkout scm
-      }
-    }
+        container('kaniko') {
+          sh '''
+            /kaniko/executor \
+              --context ./Microservices/auth \
+              --dockerfile Dockerfile.dev \
+              --destination=${REGISTRY}/auth:${TAG}
 
-    stage('Build Docker Images') {
-      steps {
-        script {
-          services = ["auth", "users", "items", "frontend"]
-          for (svc in services) {
-            sh """
-              echo "Building ${svc}"
-              docker build -t ${DOCKERHUB_USER}/${svc}:dev ./Microservices/${svc}
-            """
-          }
-        }
-      }
-    }
+            /kaniko/executor \
+              --context ./Microservices/users \
+              --dockerfile Dockerfile.dev \
+              --destination=${REGISTRY}/users:${TAG}
 
-    stage('Push to DockerHub') {
-      steps {
-        script {
-          services = ["auth", "users", "items", "frontend"]
-          for (svc in services) {
-            sh """
-              echo "Pushing ${svc}"
-              docker push ${DOCKERHUB_USER}/${svc}:dev
-            """
-          }
+            /kaniko/executor \
+              --context ./Microservices/items \
+              --dockerfile Dockerfile.dev \
+              --destination=${REGISTRY}/items:${TAG}
+
+            /kaniko/executor \
+              --context ./frontend \
+              --dockerfile Dockerfile.dev \
+              --destination=${REGISTRY}/frontend:${TAG}
+          '''
         }
       }
     }
@@ -45,10 +59,10 @@ pipeline {
 
   post {
     success {
-      echo "✅ Pipeline completed successfully"
+      echo "CI pipeline completed successfully"
     }
     failure {
-      echo "❌ Pipeline failed"
+      echo "CI pipeline failed"
     }
   }
 }
