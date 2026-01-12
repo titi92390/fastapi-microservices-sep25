@@ -1,16 +1,58 @@
-# Helm packaged charts
+############################
+# Helm
+############################
 *.tgz
+charts/
+Chart.lock
 
+############################
 # Python
+############################
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Node
+############################
+# Node / Frontend
+############################
 node_modules/
+dist/
+.build/
+.next/
 
-# Env
+############################
+# Environment & Secrets
+############################
 .env
+.env.*
+*.secret
+*.key
+*.crt
 
-# Optional Kubernetes manifests (if Helm is source of truth)
+############################
+# Vault
+############################
+vault-data/
+.vault-token
+
+############################
+# CI/CD
+############################
+jenkins_home/
+*.log
+
+############################
+# Kubernetes
+############################
+kubeconfig
+.kube/
 k8s/
 
+############################
+# IDE / OS
+############################
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,33 @@
+controller:
+  image:
+    repository: jenkins/jenkins
+    tag: lts-jdk17
+    pullPolicy: Always
+
+  admin:
+    username: admin
+    password: admin123
+
+  serviceType: ClusterIP
+  servicePort: 8080
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+
+agent:
+  enabled: true

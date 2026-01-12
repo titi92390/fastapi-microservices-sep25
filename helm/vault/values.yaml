@@ -1,0 +1,32 @@
+server:
+  image:
+    repository: hashicorp/vault
+    tag: "1.15.5"
+
+  logLevel: "info"
+
+  dev:
+    enabled: false
+
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+
+      listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_disable = 1
+      }
+
+      storage "file" {
+        path = "/vault/data"
+      }
+
+      disable_mlock = true
+
+ui:
+  enabled: true
+  serviceType: ClusterIP
+
+injector:
+  enabled: true
