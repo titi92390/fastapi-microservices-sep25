@@ -1,0 +1,54 @@
+pipeline {
+  agent any
+
+  environment {
+    DOCKERHUB_USER = "titi92390"
+    REGISTRY = "docker.io"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build Docker Images') {
+      steps {
+        script {
+          services = ["auth", "users", "items", "frontend"]
+          for (svc in services) {
+            sh """
+              echo "Building ${svc}"
+              docker build -t ${DOCKERHUB_USER}/${svc}:dev ./Microservices/${svc}
+            """
+          }
+        }
+      }
+    }
+
+    stage('Push to DockerHub') {
+      steps {
+        script {
+          services = ["auth", "users", "items", "frontend"]
+          for (svc in services) {
+            sh """
+              echo "Pushing ${svc}"
+              docker push ${DOCKERHUB_USER}/${svc}:dev
+            """
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ Pipeline completed successfully"
+    }
+    failure {
+      echo "❌ Pipeline failed"
+    }
+  }
+}
