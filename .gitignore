@@ -56,3 +56,13 @@ k8s/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Python virtualenv
+.venv/
+*/.venv/
+
+# Pytest cache
+.pytest_cache/
+
+# Python cache
+__pycache__/

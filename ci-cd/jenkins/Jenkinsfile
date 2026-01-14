@@ -5,25 +5,26 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
-  serviceAccountName: jenkins
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:latest
     command:
     - cat
     tty: true
-  - name: helm
-    image: alpine/helm:3.14.0
-    command:
-    - cat
-    tty: true
+    volumeMounts:
+    - name: docker-config
+      mountPath: /kaniko/.docker
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: dockerhub-secret
 """
     }
   }
 
   environment {
-    DOCKERHUB_USER = "titi92390"
-    REGISTRY = "docker.io"
+    DOCKER_REGISTRY = "titi92390"
+    TAG = "dev"
   }
 
   stages {
@@ -34,44 +35,51 @@ spec:
       }
     }
 
-    stage('Build Docker Images') {
+    stage('Build & Push Images') {
       steps {
         container('kaniko') {
-          script {
-            def services = ["auth", "users", "items"]
+          sh '''
+          echo "Building auth service"
+          /kaniko/executor \
+            --context Microservices/auth \
+            --dockerfile Microservices/auth/Dockerfile \
+            --destination=$DOCKER_REGISTRY/auth:$TAG
 
-            for (svc in services) {
-              sh """
-              /kaniko/executor \
-                --context ./Microservices/${svc} \
-                --dockerfile ./Microservices/${svc}/Dockerfile \
-                --destination=${REGISTRY}/${DOCKERHUB_USER}/${svc}:dev
-              """
-            }
-          }
+          echo "Building users service"
+          /kaniko/executor \
+            --context Microservices/users \
+            --dockerfile Microservices/users/Dockerfile \
+            --destination=$DOCKER_REGISTRY/users:$TAG
+
+          echo "Building items service"
+          /kaniko/executor \
+            --context Microservices/items \
+            --dockerfile Microservices/items/Dockerfile \
+            --destination=$DOCKER_REGISTRY/items:$TAG
+          '''
         }
       }
     }
 
-    stage('Deploy to Kubernetes (Helm)') {
+    stage('Run Tests (Items API)') {
       steps {
-        container('helm') {
-          sh """
-            helm upgrade --install platform helm/platform \
-              -n fastapi \
-              --create-namespace
-          """
-        }
+        sh '''
+        cd Microservices/items
+        python3 -m venv .venv
+        . .venv/bin/activate
+        pip install -r requirements.txt pytest httpx
+        pytest -v
+        '''
       }
     }
   }
 
   post {
     success {
-      echo "✅ CI/CD terminé : images + déploiement OK"
+      echo "✅ CI/CD pipeline completed successfully"
     }
     failure {
-      echo "❌ Pipeline échoué"
+      echo "❌ CI/CD pipeline failed"
     }
   }
 }
