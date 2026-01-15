@@ -1,85 +1,44 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:latest
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - name: docker-config
-      mountPath: /kaniko/.docker
-  volumes:
-  - name: docker-config
-    secret:
-      secretName: dockerhub-secret
-"""
-    }
-  }
+    agent any
 
-  environment {
-    DOCKER_REGISTRY = "titi92390"
-    TAG = "dev"
-  }
+    stages {
 
-  stages {
-
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('Build & Push Images') {
-      steps {
-        container('kaniko') {
-          sh '''
-          echo "Building auth service"
-          /kaniko/executor \
-            --context Microservices/auth \
-            --dockerfile Microservices/auth/Dockerfile \
-            --destination=$DOCKER_REGISTRY/auth:$TAG
-
-          echo "Building users service"
-          /kaniko/executor \
-            --context Microservices/users \
-            --dockerfile Microservices/users/Dockerfile \
-            --destination=$DOCKER_REGISTRY/users:$TAG
-
-          echo "Building items service"
-          /kaniko/executor \
-            --context Microservices/items \
-            --dockerfile Microservices/items/Dockerfile \
-            --destination=$DOCKER_REGISTRY/items:$TAG
-          '''
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-      }
+
+        stage('Install dependencies') {
+            steps {
+                sh '''
+                cd Microservices/items
+                python3 -m venv .venv
+                . .venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                pip install pytest httpx
+                '''
+            }
+        }
+
+        stage('Run tests') {
+            steps {
+                sh '''
+                cd Microservices/items
+                . .venv/bin/activate
+                pytest -v
+                '''
+            }
+        }
     }
 
-    stage('Run Tests (Items API)') {
-      steps {
-        sh '''
-        cd Microservices/items
-        python3 -m venv .venv
-        . .venv/bin/activate
-        pip install -r requirements.txt pytest httpx
-        pytest -v
-        '''
-      }
+    post {
+        success {
+            echo "✅ Tests automatisés OK – pipeline validée"
+        }
+        failure {
+            echo "❌ Tests en échec – pipeline stoppée"
+        }
     }
-  }
-
-  post {
-    success {
-      echo "✅ CI/CD pipeline completed successfully"
-    }
-    failure {
-      echo "❌ CI/CD pipeline failed"
-    }
-  }
 }
