@@ -24,3 +24,7 @@ app.include_router(items.router)
 def on_startup():
     print("Initializing database...")
     SQLModel.metadata.create_all(engine)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
