@@ -1,0 +1,4 @@
+project_name = "fastapi-microservices"
+aws_region   = "eu-west-3"
+environment  = "dev"
+owner        = "tiffanie"
