@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: frontend
-  tag: dev
+  repository: titi92390/fastapi-frontend
+  tag: latest
   pullPolicy: Always
 
 env:

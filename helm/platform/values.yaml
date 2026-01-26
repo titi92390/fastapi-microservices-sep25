@@ -1,138 +1,50 @@
-# =========================
-# Global configuration
-# =========================
-global:
-  useExternalSecrets: false
-  imageRegistry: titi92390
+imagePullSecrets:
+  - name: dockerhub
 
-  database:
-    enabled: true
-    host: postgres
-    port: 5432
-    name: app
-    user: app
-    password: app
-
-# =========================
-# Auth Service
-# =========================
 auth:
-  enabled: true
   replicaCount: 1
-
   image:
-    repository: auth
-    tag: dev
+    repository: titi92390/fastapi-auth
+    tag: latest
     pullPolicy: Always
 
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 8000
-    nodePort: 30081
-
-  env:
-    APP_ENV: dev
-    DATABASE_HOST: postgres
-    DATABASE_PORT: "5432"
-    DATABASE_NAME: app
-    DATABASE_USER: app
-    DATABASE_PASSWORD: app
-
-  secrets:
-    SECRET_KEY: "dev-auth-secret-key"
-
-  resources: {}
-  ingress:
-    enabled: false
-
-# =========================
-# Users Service
-# =========================
 users:
-  enabled: true
   replicaCount: 1
-
   image:
-    repository: users
-    tag: dev
+    repository: titi92390/fastapi-users
+    tag: latest
     pullPolicy: Always
 
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 8000
-    nodePort: 30082
-
-  env:
-    APP_ENV: dev
-    DATABASE_HOST: postgres
-    DATABASE_PORT: "5432"
-    DATABASE_NAME: app
-    DATABASE_USER: app
-    DATABASE_PASSWORD: app
-
-  secrets:
-    SECRET_KEY: "dev-users-secret-key"
-
-  resources: {}
-  ingress:
-    enabled: false
-
-# =========================
-# Items Service
-# =========================
 items:
-  enabled: true
   replicaCount: 1
-
   image:
-    repository: items
-    tag: dev
+    repository: titi92390/fastapi-items
+    tag: latest
     pullPolicy: Always
 
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 8000
-    nodePort: 30083
+gateway:
+  replicaCount: 1
+  image:
+    repository: titi92390/fastapi-gateway
+    tag: latest
+    pullPolicy: Always
 
-  env:
-    APP_ENV: dev
-    DATABASE_HOST: postgres
-    DATABASE_PORT: "5432"
-    DATABASE_NAME: app
-    DATABASE_USER: app
-    DATABASE_PASSWORD: app
-
-  secrets:
-    SECRET_KEY: "dev-items-secret-key"
-
-  resources: {}
-  ingress:
-    enabled: false
-
-# =========================
-# Frontend Service
-# =========================
 frontend:
-  enabled: false
   replicaCount: 1
-
   image:
-    repository: frontend
-    tag: dev
+    repository: titi92390/fastapi-frontend
+    tag: latest
     pullPolicy: Always
 
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 80
-    nodePort: 30080
 
-  env:
-    APP_ENV: dev
+auth:
+  secrets:
+    SECRET_KEY: "dev-secret-key-auth"
 
-  resources: {}
-  ingress:
-    enabled: false
+users:
+  secrets:
+    SECRET_KEY: "dev-secret-key-users"
+
+items:
+  secrets:
+    SECRET_KEY: "dev-secret-key-items"

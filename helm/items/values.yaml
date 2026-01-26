@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: leogrv22/items
-  tag: dev
+  repository: titi92390/fastapi-items
+  tag: latest
   pullPolicy: Always
 
 service:
