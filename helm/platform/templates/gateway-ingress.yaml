@@ -4,27 +4,13 @@ metadata:
   name: platform-gateway
   namespace: fastapi
   annotations:
-    # Entrypoint HTTPS uniquement
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-
-    # Middlewares Traefik (strip / sécurité)
-    traefik.ingress.kubernetes.io/router.middlewares: |
-      fastapi-strip-auth@kubernetescrd,
-      fastapi-strip-users@kubernetescrd,
-      fastapi-strip-items@kubernetescrd
-
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 spec:
-  # IngressClass moderne (remplace l’annotation legacy)
-  ingressClassName: traefik
-
-  # TLS (Let’s Encrypt / cert-manager / Traefik ACME)
-  tls:
-    - hosts:
-        - fastapi-tiffanie.duckdns.org
-      secretName: fastapi-tls
-
+  ingressClassName: alb
   rules:
-    - host: fastapi-tiffanie.duckdns.org
+    - host: fastapi-tifanie.duckdns.org
       http:
         paths:
           - path: /api/auth
@@ -50,3 +36,12 @@ spec:
                 name: platform-items
                 port:
                   number: 80
+
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: platform-frontend
+                port:
+                  number: 80
+
