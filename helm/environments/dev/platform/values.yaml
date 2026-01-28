@@ -2,21 +2,21 @@
 auth:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/auth
-    tag: dev
+  repository: titi92390/fastapi-frontend
+  tag: latest
     pullPolicy: Always
-  
+
   service:
     type: NodePort
     port: 80
     targetPort: 8000
     nodePort: 30081
-  
+
   env:
     APP_ENV: dev
-  
+
   resources: {}
   ingress:
     enabled: false
@@ -25,21 +25,21 @@ auth:
 users:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/users
-    tag: dev
+  repository: titi92390/fastapi-frontend
+  tag: latest
     pullPolicy: Always
-  
+
   service:
-    type: NodePort 
+    type: NodePort
     port: 80
     targetPort: 8000
-    nodePort: 30082 
-  
+    nodePort: 30082
+
   env:
     APP_ENV: dev
-  
+
   resources: {}
   ingress:
     enabled: false
@@ -48,21 +48,21 @@ users:
 items:
   enabled: true
   replicaCount: 1
-  
+
   image:
-    repository: leogrv22/items
-    tag: dev
+  repository: titi92390/fastapi-frontend
+  tag: latest
     pullPolicy: Always
-  
+
   service:
     type: NodePort
     port: 80
     targetPort: 8000
     nodePort: 30083
-  
+
   env:
     APP_ENV: dev
-  
+
   resources: {}
   ingress:
     enabled: false

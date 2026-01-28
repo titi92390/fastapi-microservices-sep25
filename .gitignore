@@ -81,3 +81,31 @@ __pycache__/
 *.tfstate
 *.tfstate.backup
 .terraform/
+
+############################
+# Archives d'installation
+############################
+*.zip
+*.tar.gz
+*.tgz
+awscliv2.zip
+eksctl_*.tar.gz
+
+############################
+# Terraform lock files
+############################
+**/.terraform.tfstate.lock.info
+
+############################
+# AWS CLI
+############################
+aws/dist/
+aws/install
+
+############################
+# Python venv
+############################
+.venv/
+venv/
+*/venv/
+*/.venv/

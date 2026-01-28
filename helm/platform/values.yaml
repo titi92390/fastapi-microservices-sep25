@@ -48,3 +48,12 @@ users:
 items:
   secrets:
     SECRET_KEY: "dev-secret-key-items"
+
+
+global:
+  database:
+    host: postgres
+    port: 5432
+    name: fastapi
+    user: fastapi
+    password: fastapi

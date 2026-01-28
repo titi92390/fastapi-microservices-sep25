@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  registry: docker.io  
-  repository: leogrv22/frontend
-  tag: dev
+  registry: docker.io
+  repository: titi92390/fastapi-frontend
+  tag: latest
   pullPolicy: IfNotPresent
 
 env:

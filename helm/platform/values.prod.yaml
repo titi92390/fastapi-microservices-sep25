@@ -1,26 +1,30 @@
-# ============================================================================
-# PRODUCTION VALUES - apisep25.fr
-# ============================================================================
-
+############################
+# GLOBAL
+############################
 global:
   environment: prod
   domain: platform.apisep25.fr
+  image:
+    registry: docker.io
   database:
-    host: microservices-platform-prod-db.cvrhlcdjhuda.eu-west-3.rds.amazonaws.com
+    host: postgres.fastapi.svc.cluster.local
     port: 5432
-    name: microservices_prod
-    user: dbadmin
+    name: app_db
+    user: postgres
     secretName: database-credentials
-    
-# Auth Service
+
+############################
+# AUTH SERVICE
+############################
 auth:
   enabled: true
-  replicaCount: 3
+  replicaCount: 1
+
   image:
-    repository: leogrv22/auth
-    tag: v1.0.0
+    repository: titi92390/fastapi-auth
+    tag: latest
     pullPolicy: IfNotPresent
-  
+
   resources:
     requests:
       cpu: 250m
@@ -28,26 +32,29 @@ auth:
     limits:
       cpu: 500m
       memory: 512Mi
-  
+
   autoscaling:
-    enabled: true
-    minReplicas: 3
-    maxReplicas: 10
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
     targetCPUUtilizationPercentage: 70
-  
+
   service:
     type: ClusterIP
     port: 80
 
-# Users Service
+############################
+# USERS SERVICE
+############################
 users:
   enabled: true
-  replicaCount: 3
+  replicaCount: 1
+
   image:
-    repository: leogrv22/users
-    tag: v1.0.0
+    repository: titi92390/fastapi-users
+    tag: latest
     pullPolicy: IfNotPresent
-  
+
   resources:
     requests:
       cpu: 250m
@@ -55,26 +62,29 @@ users:
     limits:
       cpu: 500m
       memory: 512Mi
-  
+
   autoscaling:
-    enabled: true
-    minReplicas: 3
-    maxReplicas: 10
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
     targetCPUUtilizationPercentage: 70
-  
+
   service:
     type: ClusterIP
     port: 80
 
-# Items Service
+############################
+# ITEMS SERVICE
+############################
 items:
   enabled: true
-  replicaCount: 3
+  replicaCount: 1
+
   image:
-    repository: leogrv22/items
-    tag: v1.0.0
+    repository: titi92390/fastapi-items
+    tag: latest
     pullPolicy: IfNotPresent
-  
+
   resources:
     requests:
       cpu: 250m
@@ -82,26 +92,29 @@ items:
     limits:
       cpu: 500m
       memory: 512Mi
-  
+
   autoscaling:
-    enabled: true
-    minReplicas: 3
-    maxReplicas: 10
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
     targetCPUUtilizationPercentage: 70
-  
+
   service:
     type: ClusterIP
     port: 80
 
-# Frontend
+############################
+# FRONTEND
+############################
 frontend:
-  enabled: true
-  replicaCount: 3
+  enabled: false
+  replicaCount: 0
+
   image:
-    repository: leogrv22/frontend
-    tag: v1.0.0
+    repository: titi92390/frontend
+    tag: latest
     pullPolicy: IfNotPresent
-  
+
   resources:
     requests:
       cpu: 250m
@@ -109,31 +122,34 @@ frontend:
     limits:
       cpu: 500m
       memory: 512Mi
-  
+
   autoscaling:
-    enabled: true
-    minReplicas: 3
-    maxReplicas: 10
+    enabled: false
+    minReplicas: 0
+    maxReplicas: 3
     targetCPUUtilizationPercentage: 70
-  
+
   service:
     type: ClusterIP
     port: 80
 
-# Ingress ALB
+############################
+# INGRESS (ALB)
+############################
 ingress:
   enabled: true
   className: alb
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-3:131674823919:certificate/eca8c675-f1f8-431f-a8b2-680c65c56915
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-3:131674823919:certificate/eca8c675-f1f8-431f-a8b2-686c65c56915
     alb.ingress.kubernetes.io/healthcheck-path: /health
-    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
-    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
-    alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+
   hosts:
     - host: platform.apisep25.fr
       paths:
@@ -144,6 +160,7 @@ ingress:
               name: platform-auth
               port:
                 number: 80
+
         - path: /api/users
           pathType: Prefix
           backend:
@@ -151,6 +168,7 @@ ingress:
               name: platform-users
               port:
                 number: 80
+
         - path: /api/items
           pathType: Prefix
           backend:
@@ -158,6 +176,7 @@ ingress:
               name: platform-items
               port:
                 number: 80
+
         - path: /
           pathType: Prefix
           backend:
@@ -166,7 +185,9 @@ ingress:
               port:
                 number: 80
 
-# PodDisruptionBudget
+############################
+# POD DISRUPTION BUDGET
+############################
 podDisruptionBudget:
-  enabled: true
-  minAvailable: 2
+  enabled: false
+  minAvailable: 1

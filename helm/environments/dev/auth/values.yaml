@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   registry: docker.io
-  repository: leogrv22/auth
-  tag: dev
+  repository: titi92390/fastapi-auth
+  tag: latest
   pullPolicy: IfNotPresent
 
 env:
