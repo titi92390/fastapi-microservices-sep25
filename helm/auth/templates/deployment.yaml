@@ -22,45 +22,24 @@ spec:
           command: ['sh', '-c']
           args:
             - |
-              echo "Checking database availability..."
-              {{- if .Values.global.useExternalSecrets }}
-              # AWS RDS - Pas besoin d'attendre un pod
-              echo "Using AWS RDS (managed database)"
-              echo "Database is already available"
-              sleep 5
-              {{- else }}
-              # K3s - Attendre le pod PostgreSQL
-              echo "Waiting for PostgreSQL pod..."
+              echo "Waiting for PostgreSQL..."
               until nslookup postgres-postgresql.{{ .Release.Namespace }}.svc.cluster.local 2>/dev/null; do
-                echo "PostgreSQL not ready yet, waiting...";
+                echo "PostgreSQL not ready, waiting...";
                 sleep 3;
               done
               echo "PostgreSQL is ready!"
-              {{- end }}
-      
       containers:
         - name: auth
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8000
               name: http
-          
-          # Variables d'environnement depuis ConfigMap et Secret
           envFrom:
             - configMapRef:
                 name: {{ include "auth.fullname" . }}-config
-            {{- if .Values.global.useExternalSecrets }}
-            # AWS - Utiliser le secret créé par ESO
-            - secretRef:
-                name: database-credentials
-            {{- else }}
-            # K3s - Utiliser le secret classique
             - secretRef:
                 name: {{ include "auth.fullname" . }}-secret
-            {{- end }}
-          
-          # Health checks
           readinessProbe:
             httpGet:
               path: /docs
@@ -69,8 +48,6 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 5
-            successThreshold: 1
-          
           livenessProbe:
             httpGet:
               path: /docs
@@ -79,6 +56,4 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 3
-          
-          # Resources
           resources: {{- toYaml .Values.resources | nindent 12 }}

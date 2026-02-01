@@ -1,6 +1,5 @@
 global:
   useExternalSecrets: false
-  
   database:
     host: postgres-postgresql.dev.svc.cluster.local
     port: "5432"
@@ -10,20 +9,26 @@ global:
 
 auth:
   image:
+    repository: titi92390/auth
     tag: dev
     pullPolicy: Always
 
 users:
   image:
+    repository: titi92390/users
     tag: dev
     pullPolicy: Always
 
 items:
   image:
+    repository: titi92390/items
     tag: dev
     pullPolicy: Always
 
 frontend:
   image:
+    repository: titi92390/frontend
     tag: dev
     pullPolicy: Always
+  env:
+    NEXT_PUBLIC_API_BASE: "http://172.31.31.104"

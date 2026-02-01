@@ -1,68 +1,54 @@
-# Auth Service
+global:
+  useExternalSecrets: false
+  database:
+    host: postgres-postgresql.dev.svc.cluster.local
+    port: "5432"
+    name: postgres
+    user: postgres
+    password: postgres
+
 auth:
   enabled: true
   replicaCount: 1
-  
   image:
-    repository: leogrv22/auth
+    repository: titi92390/auth
     tag: dev
     pullPolicy: Always
-  
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 8000
-    nodePort: 30081
-  
   env:
     APP_ENV: dev
-  
   resources: {}
-  ingress:
-    enabled: false
 
-# Users Service
 users:
   enabled: true
   replicaCount: 1
-  
   image:
-    repository: leogrv22/users
+    repository: titi92390/users
     tag: dev
     pullPolicy: Always
-  
-  service:
-    type: NodePort 
-    port: 80
-    targetPort: 8000
-    nodePort: 30082 
-  
   env:
     APP_ENV: dev
-  
   resources: {}
-  ingress:
-    enabled: false
 
-# Items Service
 items:
   enabled: true
   replicaCount: 1
-  
   image:
-    repository: leogrv22/items
+    repository: titi92390/items
     tag: dev
     pullPolicy: Always
-  
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 8000
-    nodePort: 30083
-  
   env:
     APP_ENV: dev
-  
   resources: {}
-  ingress:
-    enabled: false
+
+frontend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: titi92390/frontend
+    registry: docker.io
+    tag: dev
+    pullPolicy: Always
+  env:
+    NEXT_PUBLIC_API_BASE: "http://172.31.31.104"
+  service:
+    port: 3000

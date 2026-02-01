@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   registry: docker.io
-  repository: leogrv22/auth
+  repository: titi92390/auth
   tag: dev
   pullPolicy: IfNotPresent
 
