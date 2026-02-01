@@ -1,0 +1,65 @@
+2026-02-01T19:22:30Z	INFO	Vulnerability scanning is enabled
+2026-02-01T19:22:30Z	INFO	Secret scanning is enabled
+2026-02-01T19:22:30Z	INFO	If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-02-01T19:22:30Z	INFO	Please see also https://aquasecurity.github.io/trivy/v0.52/docs/scanner/secret/#recommendation for faster secret detection
+2026-02-01T19:22:31Z	INFO	Detected OS	family="alpine" version="3.21.3"
+2026-02-01T19:22:31Z	WARN	This OS version is not on the EOL list	family="alpine" version="3.21"
+2026-02-01T19:22:31Z	INFO	[alpine] Detecting vulnerabilities...	os_version="3.21" repository="3.21" pkg_num=17
+2026-02-01T19:22:31Z	INFO	Number of language-specific files	num=1
+2026-02-01T19:22:31Z	INFO	[node-pkg] Detecting vulnerabilities...
+
+titi92390/frontend:dev (alpine 3.21.3)
+======================================
+Total: 4 (HIGH: 2, CRITICAL: 2)
+
+┌────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│  Library   │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3 │ CVE-2025-15467 │ CRITICAL │ fixed  │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+├────────────┼────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ libssl3    │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+└────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘
+2026-02-01T19:22:31Z	INFO	Table result includes only package filenames. Use '--format json' option to get the full path to the package file.
+
+Node.js (node-pkg)
+==================
+Total: 6 (HIGH: 6, CRITICAL: 0)
+
+┌────────────────────────────┬─────────────────────┬──────────┬────────┬───────────────────┬────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────┐
+│          Library           │    Vulnerability    │ Severity │ Status │ Installed Version │                   Fixed Version                    │                           Title                           │
+├────────────────────────────┼─────────────────────┼──────────┼────────┼───────────────────┼────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│ cross-spawn (package.json) │ CVE-2024-21538      │ HIGH     │ fixed  │ 7.0.3             │ 7.0.5, 6.0.6                                       │ cross-spawn: regular expression denial of service         │
+│                            │                     │          │        │                   │                                                    │ https://avd.aquasec.com/nvd/cve-2024-21538                │
+├────────────────────────────┼─────────────────────┤          │        ├───────────────────┼────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│ glob (package.json)        │ CVE-2025-64756      │          │        │ 10.4.2            │ 11.1.0, 10.5.0                                     │ glob: glob: Command Injection Vulnerability via Malicious │
+│                            │                     │          │        │                   │                                                    │ Filenames                                                 │
+│                            │                     │          │        │                   │                                                    │ https://avd.aquasec.com/nvd/cve-2025-64756                │
+├────────────────────────────┼─────────────────────┤          │        ├───────────────────┼────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│ next (package.json)        │ GHSA-h25m-26qc-wcjf │          │        │ 14.2.35           │ 15.0.8, 15.1.12, 15.2.9, 15.3.9, 15.4.11, 15.5.10, │ Next.js HTTP request deserialization can lead to DoS when │
+│                            │                     │          │        │                   │ 15.6.0-canary.61, 16.0.11, 16.1.5                  │ using insecure React...                                   │
+│                            │                     │          │        │                   │                                                    │ https://github.com/advisories/GHSA-h25m-26qc-wcjf         │
+├────────────────────────────┼─────────────────────┤          │        ├───────────────────┼────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│ tar (package.json)         │ CVE-2026-23745      │          │        │ 6.2.1             │ 7.5.3                                              │ node-tar: tar: node-tar: Arbitrary file overwrite and     │
+│                            │                     │          │        │                   │                                                    │ symlink poisoning via unsanitized linkpaths...            │
+│                            │                     │          │        │                   │                                                    │ https://avd.aquasec.com/nvd/cve-2026-23745                │
+│                            ├─────────────────────┤          │        │                   ├────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│                            │ CVE-2026-23950      │          │        │                   │ 7.5.4                                              │ node-tar: tar: node-tar: Arbitrary file overwrite via     │
+│                            │                     │          │        │                   │                                                    │ Unicode path collision race condition...                  │
+│                            │                     │          │        │                   │                                                    │ https://avd.aquasec.com/nvd/cve-2026-23950                │
+│                            ├─────────────────────┤          │        │                   ├────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│                            │ CVE-2026-24842      │          │        │                   │ 7.5.7                                              │ node-tar: tar: node-tar: Arbitrary file creation via path │
+│                            │                     │          │        │                   │                                                    │ traversal bypass in hardlink...                           │
+│                            │                     │          │        │                   │                                                    │ https://avd.aquasec.com/nvd/cve-2026-24842                │
+└────────────────────────────┴─────────────────────┴──────────┴────────┴───────────────────┴────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────┘
